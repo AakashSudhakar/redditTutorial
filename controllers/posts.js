@@ -24,7 +24,6 @@ module.exports = (app) => {
 
     // POST request for saving user inputted req data and creating new post resource
     app.post("/posts", (req, res) => {
-
         Post
             .create(req.body)
             .then((post) => {
@@ -37,6 +36,18 @@ module.exports = (app) => {
 
     // GET request for showing a specific post
     app.get("/posts/:id", (req, res) => {
+        Post
+            .findById(req.params.id)
+            .then((post) => {
+                res.render("posts-show", { post });
+            })
+            .catch((err) => {
+                console.error(error.message);
+            });
+    });
+
+    // GET request for redirecting comment save to specific post display
+    app.get("/posts/:id/comments", (req, res) => {
         Post
             .findById(req.params.id)
             .then((post) => {

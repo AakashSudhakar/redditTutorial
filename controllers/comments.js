@@ -1,13 +1,14 @@
 // comments.js (redditTutorial/controllers)
 
-module.exports = ((app) => {
+let Comment = require("../models/comment");
 
+module.exports = ((app) => {
     // CREATE
-    app.post('/posts/:postId/comments', (req, res) => {
+    app.post("/posts/:id/comments", (req, res) => {
         // INSTANTIATE INSTANCE OF MODEL
         let comment = new Comment(req.body);
 
-        Post.findById(req.params.postId).populate("comments").exec((err, post) => {
+        Post.findById(req.params.id).populate("comments").exec((err, post) => {
             comment.save((err, comment) => {
                 post.comments.unshift(comment);
                 post.save();
@@ -17,5 +18,3 @@ module.exports = ((app) => {
         });
     });
 });
-
-let Comment = require('../models/comment');

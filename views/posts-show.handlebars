@@ -5,13 +5,13 @@
 <h3>{{post.desc}}</h3>
 
 {{#each post.comments}}   
-  <p>{{this.content}}</p>
+    <p>{{this.content}}</p>
 {{/each}}
 
 <a href="/posts/{{post._id}}/edit">Edit</a>
 
 <form action="/posts/{{post._id}}/comments">
-    <textarea class='form-control' name="body" placeholder="Comment"></textarea>
+    <textarea class="form-control" name="body" placeholder="Comment"></textarea>
     <div class="text-right">
         <button type="submit">Save</button>
     </div>
