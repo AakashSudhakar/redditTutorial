@@ -12,8 +12,8 @@ let PostSchema = new Schema({
     subreddit       : { type: String, required: true },
     author          : { type: Schema.Types.ObjectId, ref: 'User', required: false },
     comments        : [ Comment.schema ],
-    downVotes       : [ String ],
-    upVotes         : [ String ],
+    downvotes       : [ String ],
+    upvotes         : [ String ],
     voteTotal       : { type: Number, default: 0 }
 });
 
