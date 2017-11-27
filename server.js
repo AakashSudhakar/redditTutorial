@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));     // Initialize bodyParser
 app.engine(".handlebars", exphbs({
     defaultLayout: "main"
 }));
-app.set('view engine', 'handlebars');
+app.set("view engine", "handlebars");
 
 
 
@@ -46,7 +46,7 @@ app.set('view engine', 'handlebars');
 
 
 require("./controllers/posts.js")(app);                 // Requires posts.js module
-require('./controllers/comments.js')(app);              // Requires comments.js module
+require("./controllers/comments.js")(app);              // Requires comments.js module
 
 let port = 3000;
 
