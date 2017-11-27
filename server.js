@@ -73,7 +73,7 @@ app.use(verifyUserAuth);
 
 require("./controllers/posts.js")(app);                 // Requires posts.js module
 require("./controllers/comments.js")(app);              // Requires comments.js module
-require("./controllers/user.js")(app);                  // Requires users.js module
+require("./controllers/replies.js")(app);               // Requires replies.js module
 
 app.get("/", (req, res) => {
     Post
