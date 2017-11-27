@@ -2,59 +2,96 @@
 // Controller for manipulating/CRUDing a post model
 
 const Post = require("../models/post");
+const User = require("../models/user");
+const mongoose = require("mongoose");
 
 module.exports = (app) => {
+    app.put("posts/:id/vote-up", (req, res) => {
+        console.log("Upvote");
 
-    // GET request for displaying all posts (posts-index) on home page
-    app.get("/", (req, res) => {
         Post
-            .find({})
-            .then((posts) => {
-                res.render("posts-index", { posts });
+            .findById(req.params.id)
+            .exec((err, post) => {
+                post.upvotes.push(req.user.id);
+                post.voteScore = post.voteTotal + 1;
+                post.save();
+
+                res.status(200);
             })
             .catch((err) => {
                 console.error(err.message);
             });
     });
 
-    // GET request for displaying new form page for new post (posts-new)
-    app.get("/posts/new", (req, res) => {
-        res.render("posts-new", { });
+    app.put("posts/:id/vote-down", (req, res) => {
+        console.log("Downvote");
+
+        Post
+            .findById(req.params.id)
+            .exec((err, post) => {
+                post.downvotes.push(req.user.id);
+                post.voteScore = post.voteTotal - 1;
+                post.save();
+
+                res.status(200);
+            })
+            .catch((err) => {
+                console.error(err.message);
+            });
     });
 
-    // POST request for saving user inputted req data and creating new post resource
     app.post("/posts", (req, res) => {
-        Post
-            .create(req.body)
-            .then((post) => {
-                res.redirect(`/posts/${post._id}`);
-            })
-            .catch((err) => {
-                console.error(error.message);
-            })
-    });
+        console.log(req.body.userId);
 
-    // GET request for showing a specific post
-    app.get("/posts/:id", (req, res) => {
-        Post
-            .findById(req.params.id)
-            .then((post) => {
-                res.render("posts-show", { post });
-            })
-            .catch((err) => {
-                console.error(error.message);
+        if (req.body.userId == 0) {
+            let user = new User({
+                username: "anonymous",
+                password: "none"
             });
-    });
 
-    // GET request for redirecting comment save to specific post display
-    app.get("/posts/:id/comments", (req, res) => {
-        Post
-            .findById(req.params.id)
-            .then((post) => {
-                res.render("posts-show", { post });
-            })
-            .catch((err) => {
-                console.error(error.message);
+            let post = new Post({
+                title: req.body.title,
+                summary: req.body.summary,
+                subreddit: req.body.subreddit,
+                author: user
             });
+
+            post.save((err, post) => {
+                if (err) {
+                    console.error(err.message);
+
+                    return res.redirect("/posts/new");
+                }
+
+                console.log("Post was saved successfully.");
+                let id = post._id;
+                return res.redirect(`/posts/${id}`);
+            });
+        }
+        else {
+            let author = User
+                .findById(req.body.userId)
+                .exec()
+                .then((user) => {
+                    let post = new Post({
+                        title: req.body.title,
+                        summary: req.body.summary,
+                        subreddit: req.body.subreddit,
+                        author: user
+                    });
+
+                    post.save((err, post) => {
+                        if (err) {
+                            console.error(err.message);
+
+                            return res.redirect("/posts/new");
+                        }
+
+                        console.log("Post was saved successfully.");
+                        let id = post._id;
+                        return res.redirect(`/posts/${id}`);
+                    });
+                });
+        }
     });
 }

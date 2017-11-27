@@ -1,20 +1,67 @@
 // comments.js (redditTutorial/controllers)
 
-let Comment = require("../models/comment");
+const Comment = require("../models/comment");
+const User = require("../models/user");
+const Post = require("../models/post");
+const mongoose = require("mongoose");
 
-module.exports = ((app) => {
-    // CREATE
-    app.post("/posts/:id/comments", (req, res) => {
-        // INSTANTIATE INSTANCE OF MODEL
-        let comment = new Comment(req.body);
+module.exports = (app) => {
+    app.post('/posts/:id/comments', (req, res) => {
+        let id = req.params.id;
+        console.log(req.body.userId);
 
-        Post.findById(req.params.id).populate("comments").exec((err, post) => {
-            comment.save((err, comment) => {
-                post.comments.unshift(comment);
-                post.save();
-    
-                return res.redirect("/posts/" + post._id);
-            })
-        });
+        if (req.body.userId == 0) {
+
+            var user = new User({
+                username: "anonymous",
+                password: "none"
+            });
+
+            let comment = new Comment({
+                content: req.body.content,
+                author: user.username,
+                authorId: req.body.userId
+            });
+
+            Post
+                .findById(req.params.id)
+                .exec((err, post) => {
+                    post.comments.unshift(comment);
+                    post.save();
+                    console.log('CONTENT')
+                    console.log(comment.content);
+                    return res.redirect(`/posts/${id}`);
+                })
+                .catch((err) => {
+                    console.error(err.message);
+                });
+        } 
+        else {
+
+            let author = User
+                .findById(req.body.userId)
+                .exec()
+                .then((user) => {
+
+                    let comment = new Comment({
+                        content: req.body.content,
+                        author: user.username,
+                        authorId: req.body.userId
+                    });
+
+                    Post
+                        .findById(req.params.id)
+                        .exec((err, post) => {
+                            post.comments.unshift(comment);
+                            post.save();
+                            console.log('CONTENT')
+                            console.log(comment.content);
+                            return res.redirect(`/posts/${id}`);
+                        })
+                        .catch((err) => {
+                            console.error(err.message);
+                        });
+                });
+        }
     });
-});
+  };
