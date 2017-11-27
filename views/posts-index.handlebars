@@ -1,8 +1,67 @@
 <!-- posts-index.hbs (redditTutorial) -->
 
-<h1>Posts</h1>
 
-{{#each posts}}
-    <h3>{{this.title}}</h3>
-    <h3>{{this.description}}</h3>
-{{/each}}
+
+<header class="pageHeader">
+    <div class="loginButtons">
+        {{#if currentUserId}}
+            <button onclick="location.href = '/posts/new'; return false;"> Create New Post </button>
+            <button onclick="location.href = '/logout'; return false;"> Logout </button>
+        {{else}}
+            <button class="modal-trigger" data-target="modalL"> Login </button>
+            <button class="modal-trigger" data-target="modalS"> Sign Up </button>
+        {{/if}}
+    </div>
+</header>
+
+<main>
+    <div class="pageTitle">
+        <h1> The Front Page </h1>
+        <hr>
+    </div>
+
+    <div class="posts">
+        {{#each post}}
+
+        <div class="postContainer">
+            <div class="postContent">
+                <a class="postTitle" href="/posts/{{this.id}}"> {{this.title}} </a>
+                <p class="postSummary"> {{this.summary}} </p>
+            </div>
+
+            <div class="voteButtons">
+                <form class="vote-up" data-id="{{this._id}}">
+                    <button type="submit"> &#9650; </button>
+                </form>
+
+                <form class="vote-down" data-id="{{this._id}}">
+                    <button type="submit"> &#9660; </button>
+                </form>
+            </div>
+        </div>
+    {{/each}}
+    </div>
+</main>
+
+
+<!-- Modal Structure -->
+<div id="modalL" class="modal">
+  <form class="modal-content" method="post" action="/login">
+    <input name="username" placeholder="username"/>
+    <input name="password" type="password" placeholder="password"/>
+    <div class="modal-footer">
+      <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Log In</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modal Structure -->
+<div id="modalS" class="modal">
+  <form class="modal-content" method="post" action="/sign-up">
+    <input name="username" placeholder="username"/>
+    <input name="password" type="password" placeholder="password"/>
+    <div class="modal-footer">
+      <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit"> Sign Up</button>
+    </div>
+  </form>
+</div>
