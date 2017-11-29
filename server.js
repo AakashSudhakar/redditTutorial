@@ -6,7 +6,7 @@
 // ========================== INSTALLATIONS & DECLARATIONS ===========================
 // ===================================================================================
 
-
+// require("dotenv").config();
 const express = require("express");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
@@ -15,7 +15,6 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-require("dotenv").config();
 
 
 // ===================================================================================
@@ -180,7 +179,7 @@ app.post("/sign-up", (req, res, next) => {
     });
 });
 
-let port = 3000;
+let port = 3030;
 app.listen(port, () => {
-    console.log("Example app listening on port 3000");
+    console.log(`Example app listening on port ${port}`);
 });
