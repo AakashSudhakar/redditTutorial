@@ -33,7 +33,7 @@ mongoose.set("debug", true);
 // ===================================================================================
 
 
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));     // Initialize bodyParser
 app.engine(".handlebars", exphbs({
     defaultLayout: "main"
@@ -70,9 +70,13 @@ app.use(verifyUserAuth);
 // ===================================================================================
 
 
-require("./controllers/posts.js")(app);                 // Requires posts.js module
-require("./controllers/comments.js")(app);              // Requires comments.js module
-require("./controllers/replies.js")(app);               // Requires replies.js module
+require("./controllers/posts.js")(app);                 // Requires posts.js controller
+require("./controllers/comments.js")(app);              // Requires comments.js controller
+require("./controllers/replies.js")(app);               // Requires replies.js controller
+
+require("./models/post.js")(app);                       // Requires post.js model
+require("./models/comment.js")(app);                    // Requires comment.js model
+require("./models/user.js")(app);                       // Requires user.js model
 
 app.get("/", (req, res) => {
     Post
